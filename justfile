@@ -6,6 +6,10 @@ default:
 install:
     uv sync
 
+# Run the development server with auto-reload
+run:
+    uv run uvicorn email_processor.main:app --host 0.0.0.0 --port 8081 --reload
+
 # Run tests (pass extra args to pytest)
 test *ARGS:
     uv run pytest {{ARGS}}
