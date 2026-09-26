@@ -1,7 +1,13 @@
 credentials.json
 token.json
+.env
+.env.*
+!.env.sample
 .venv/
 __pycache__/
+.pytest_cache/
+.ruff_cache/
+*.log
 
 # local only
 docs/
