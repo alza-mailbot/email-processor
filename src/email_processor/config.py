@@ -11,12 +11,14 @@ class Settings(BaseSettings):
     Attributes:
         log_level: Logging level name for the application logger.
         port: TCP port the HTTP server listens on.
+        gmail_token_path: Path to the Gmail OAuth token file.
     """
 
     model_config = SettingsConfigDict(env_file=".env")
 
     log_level: str = "INFO"
     port: int = 8080
+    gmail_token_path: str
 
 
 @lru_cache

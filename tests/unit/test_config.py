@@ -19,6 +19,13 @@ class TestSettings:
         assert settings.log_level == "INFO"
         assert settings.port == 8080
 
+    def test_missing_token_path_is_rejected(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Verify settings fail fast when the required token path is absent."""
+        monkeypatch.delenv("GMAIL_TOKEN_PATH", raising=False)
+
+        with pytest.raises(ValidationError):
+            Settings(_env_file=None)
+
     def test_environment_overrides_default(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Verify an environment variable overrides the default value."""
         monkeypatch.setenv("LOG_LEVEL", "DEBUG")
