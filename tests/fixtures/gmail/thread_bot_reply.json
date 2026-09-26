@@ -1,0 +1,97 @@
+{
+  "id": "1a0dfa61df2a54ee",
+  "threadId": "1a0dfa50856afdd2",
+  "labelIds": [
+    "SENT"
+  ],
+  "snippet": "Dobrý den, pane Peterko, Ano, na skladě máme ledničku od firmy Siemens. Měl byste o ní zájem? S pozdravem Ledničkomat On Sat, Sep 26, 2026 at 11:35 PM Pavel Dvořák &lt;zakaznik@example.com&gt; wrote:",
+  "payload": {
+    "partId": "",
+    "mimeType": "multipart/alternative",
+    "filename": "",
+    "headers": [
+      {
+        "name": "MIME-Version",
+        "value": "1.0"
+      },
+      {
+        "name": "Date",
+        "value": "Sat, 26 Sep 2026 23:36:40 +0200"
+      },
+      {
+        "name": "References",
+        "value": "<CA+9zZuSDe5LpGgGceCjHvccRsgfkDPrviEff3=S7mf5Mj1wC-A@mail.gmail.com>"
+      },
+      {
+        "name": "In-Reply-To",
+        "value": "<CA+9zZuSDe5LpGgGceCjHvccRsgfkDPrviEff3=S7mf5Mj1wC-A@mail.gmail.com>"
+      },
+      {
+        "name": "Message-ID",
+        "value": "<CAAktiRD8=Yqmamcb7hgquUudOGDRN2ESmutq03Jcs_ZqPm3DzQ@mail.gmail.com>"
+      },
+      {
+        "name": "Subject",
+        "value": "Re: Dotaz na zboží"
+      },
+      {
+        "name": "From",
+        "value": "\"Pavel Dvořák\" <techmailbot6@gmail.com>"
+      },
+      {
+        "name": "To",
+        "value": "\"Pavel Dvořák\" <zakaznik@example.com>"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/alternative; boundary=\"000000000000e36b8e065c69a045\""
+      }
+    ],
+    "body": {
+      "size": 0
+    },
+    "parts": [
+      {
+        "partId": "0",
+        "mimeType": "text/plain",
+        "filename": "",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "text/plain; charset=\"UTF-8\""
+          },
+          {
+            "name": "Content-Transfer-Encoding",
+            "value": "quoted-printable"
+          }
+        ],
+        "body": {
+          "size": 309,
+          "data": "RG9icsO9IGRlbiwgcGFuZSBQZXRlcmtvLA0KDQpBbm8sIG5hIHNrbGFkxJsgbcOhbWUgbGVkbmnEjWt1IG9kIGZpcm15IFNpZW1lbnMuDQpNxJtsIGJ5c3RlIG8gbsOtIHrDoWplbT8NCg0KUyBwb3pkcmF2ZW0NCkxlZG5pxI1rb21hdA0KDQpPbiBTYXQsIFNlcCAyNiwgMjAyNiBhdCAxMTozNeKAr1BNIFBhdmVsIER2b8WZw6FrIDx6YWthem5pa0BleGFtcGxlLmNvbT4gd3JvdGU6DQoNCj4gRG9icsO9IGRlbiwNCj4NCj4gbcOhdGUgbsSbamFrb3UgbGVkbmnEjWt1IG5hIHNrbGFkdT8NCj4NCj4gUyBwb3pkcmF2ZW0NCj4gUGV0ZXJrYQ0KPg0K"
+        }
+      },
+      {
+        "partId": "1",
+        "mimeType": "text/html",
+        "filename": "",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "text/html; charset=\"UTF-8\""
+          },
+          {
+            "name": "Content-Transfer-Encoding",
+            "value": "quoted-printable"
+          }
+        ],
+        "body": {
+          "size": 747,
+          "data": "PGRpdiBkaXI9Imx0ciI-PGRpdj5Eb2Jyw70gZGVuLCBwYW5lIFBldGVya28sPC9kaXY-PGRpdj48YnI-PC9kaXY-PGRpdj5Bbm8sIG5hIHNrbGFkxJsgbcOhbWUgbGVkbmnEjWt1IG9kIGZpcm15IFNpZW1lbnMuPC9kaXY-PGRpdj5NxJtsIGJ5c3RlIG8gbsOtIHrDoWplbT88YnI-PGJyPjwvZGl2PjxkaXY-UyBwb3pkcmF2ZW08L2Rpdj48ZGl2PkxlZG5pxI1rb21hdDwvZGl2PjwvZGl2Pjxicj48ZGl2IGNsYXNzPSJnbWFpbF9xdW90ZSBnbWFpbF9xdW90ZV9jb250YWluZXIiPjxkaXYgZGlyPSJsdHIiIGNsYXNzPSJnbWFpbF9hdHRyIj5PbiBTYXQsIFNlcCAyNiwgMjAyNiBhdCAxMTozNeKAr1BNIFBhdmVsIER2b8WZw6FrICZsdDs8YSBocmVmPSJtYWlsdG86emFrYXpuaWtAZXhhbXBsZS5jb20iPnpha2F6bmlrQGV4YW1wbGUuY29tPC9hPiZndDsgd3JvdGU6PGJyPjwvZGl2PjxibG9ja3F1b3RlIGNsYXNzPSJnbWFpbF9xdW90ZSIgc3R5bGU9Im1hcmdpbjowcHggMHB4IDBweCAwLjhleDtib3JkZXItbGVmdDoxcHggc29saWQgcmdiKDIwNCwyMDQsMjA0KTtwYWRkaW5nLWxlZnQ6MWV4Ij48ZGl2IGRpcj0ibHRyIj48ZGl2PkRvYnLDvSBkZW4sPC9kaXY-PGRpdj48YnI-PC9kaXY-PGRpdj5tw6F0ZSBuxJtqYWtvdSBsZWRuacSNa3UgbmEgc2tsYWR1PzwvZGl2PjxkaXY-PGJyPjwvZGl2PjxkaXY-UyBwb3pkcmF2ZW08L2Rpdj48ZGl2PlBldGVya2E8L2Rpdj48L2Rpdj4NCjwvYmxvY2txdW90ZT48L2Rpdj4NCg=="
+        }
+      }
+    ]
+  },
+  "sizeEstimate": 2064,
+  "historyId": "3563",
+  "internalDate": "1790458600000"
+}

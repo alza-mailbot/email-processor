@@ -1,0 +1,166 @@
+{
+  "id": "1a0dfa50856afdd2",
+  "threadId": "1a0dfa50856afdd2",
+  "labelIds": [
+    "CATEGORY_PERSONAL",
+    "INBOX"
+  ],
+  "snippet": "Dobrý den, máte nějakou ledničku na skladu? S pozdravem Peterka",
+  "payload": {
+    "partId": "",
+    "mimeType": "multipart/alternative",
+    "filename": "",
+    "headers": [
+      {
+        "name": "Delivered-To",
+        "value": "techmailbot6@gmail.com"
+      },
+      {
+        "name": "Received",
+        "value": "by 2002:a98:d6c5:0:b0:279:895:ebfe with SMTP id q5csp1571102eik;        Sat, 26 Sep 2026 14:35:30 -0700 (PDT)"
+      },
+      {
+        "name": "X-Received",
+        "value": "by 2002:a2e:be83:0:b0:3a6:48d1:8316 with SMTP id 38308e7fff4ca-3a648d1870dmr18992611fa.11.1790458530117;        Sat, 26 Sep 2026 14:35:30 -0700 (PDT)"
+      },
+      {
+        "name": "ARC-Seal",
+        "value": "i=2; a=rsa-sha256; t=1790458530; cv=pass;        d=google.com; s=arc-20260327;        b=k91ViLtlIspv8DqmN44/HpYiuc3sPgcaOQkyGO2X4vLYyb+zh6EgUDpHqCafp4eHPt         7Z+TkGnKV7hbl2Ju8uOtiR2hAPwYPIUN9yZN+XLLvYwL/hs+SmNhXgbRtFLT2Z0gLuL5         sby5OMywYd3JpngUx7h7NegBG4iidYMY43as3eTFYF+YvmaitKggFU5THHLbXDUMonk1         mHLCb+Ywht08ujR/stj8df5bMs5nJOXqyECxkS5B7vou20ua2IJKKu6d/X0DK8RHHe9Y         nvO1GLh2nRxRjTgJ8ReE7XHdhJC27NPySnSGdKohmo3hcszwNZgcsquPh3XxwxPQU8KK         Db3g=="
+      },
+      {
+        "name": "ARC-Message-Signature",
+        "value": "i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;        h=to:subject:message-id:date:from:mime-version:dkim-signature;        bh=Jp2EovnxN9Ez8IgfQI2UrI6SWLXf6+7EBSfEHoa4oqk=;        fh=bpyfEYERDASaM01WV5UI9xudSG+5ew7+zigHu1NMoJg=;        b=rii/hm8uyULSo//EaAzKza8rrnKiDtKKJpARytDQmD1Begid5sM/zxfnGp7VpBSvyO         T9BgpRhdWfTvJ0KhSgNtcj0sJWoA6ZYcbUCG6BZjIDFNGXrjKFmlzm2PSFKg+J8baOr3         Wv+h8HFKSmkRK8v0OxXPp/AEjZ7y9pP14uXrstQzagKvx8/M6DhpG4Ppdv2FN4CWnGKk         gwsLpSXE1VO0LzumiGH3lCghf5nPiGZch2EdZgZip1oNAK8INWYy9mehjyeSrTOJiZwQ         U+7ZoYVdlvl7x3K4Jab7CFa8t//kY5dazVM1ee/txzVLU6m4+jqD2x2BUlaHG79LNUtH         h3MQ==;        dara=google.com"
+      },
+      {
+        "name": "ARC-Authentication-Results",
+        "value": "i=2; mx.google.com;       dkim=pass header.i=@gmail.com header.s=20251104 header.b=Mcb6FYlD;       arc=pass (i=1);       spf=pass (google.com: domain of zakaznik@example.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=zakaznik@example.com;       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;       dara=pass header.i=@gmail.com"
+      },
+      {
+        "name": "Return-Path",
+        "value": "<zakaznik@example.com>"
+      },
+      {
+        "name": "Received",
+        "value": "from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])        by mx.google.com with SMTPS id 38308e7fff4ca-3a64b53db96sor8952291fa.2.2026.09.26.14.35.30        for <techmailbot6@gmail.com>        (Google Transport Security);        Sat, 26 Sep 2026 14:35:30 -0700 (PDT)"
+      },
+      {
+        "name": "Received-SPF",
+        "value": "pass (google.com: domain of zakaznik@example.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;"
+      },
+      {
+        "name": "Authentication-Results",
+        "value": "mx.google.com;       dkim=pass header.i=@gmail.com header.s=20251104 header.b=Mcb6FYlD;       arc=pass (i=1);       spf=pass (google.com: domain of zakaznik@example.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=zakaznik@example.com;       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;       dara=pass header.i=@gmail.com"
+      },
+      {
+        "name": "ARC-Seal",
+        "value": "i=1; a=rsa-sha256; t=1790458530; cv=none;        d=google.com; s=arc-20260327;        b=CbqiSBJhRx13/8qhnwRC6byVFDypizi7ZBxV35r08Mi4fWjSKlPW8/YNM53yEhrlOE         vb3e/0NlD//PUPL2q4abgDm1tK5GHr2+XEkI7zGxGjzs07ZtYjjamdndySmIiCHDhZH+         F9+OxJnr6W+B383uFK9wblmZbxCVr7m6yMDY+GZPOrAc/ZL4IbGVr//L/tThRPiQtT7f         CNmdSSlh5Pjx05Fh1v4RnoZGILvY9VPzeIQLB4teJQsa90rSp3liqpcLQTBJmSrw0eIQ         /MWOiWjCp5AbU0a+ZET+cuuDWGRuHx9258N33KijREzAEzePulvq5CLGJDKYebpmOOrQ         AAJQ=="
+      },
+      {
+        "name": "ARC-Message-Signature",
+        "value": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;        h=to:subject:message-id:date:from:mime-version:dkim-signature;        bh=Jp2EovnxN9Ez8IgfQI2UrI6SWLXf6+7EBSfEHoa4oqk=;        fh=bpyfEYERDASaM01WV5UI9xudSG+5ew7+zigHu1NMoJg=;        b=ES41pKByy8rSdf+V4EvDxVeJfSi+v8i4EAvEP/vuLFz/3fRlq8tQd0fOPD4o5XE3I+         FbKp9FdWo6QLFM/B7FNm12d0D3ZVhxhXIjRWzEyhHSfaJHAYZyzGgyU5smgN+PoClX8r         +82lFMTjUCRx+psyGL6DHt8Fb7D98QhD4BmJbuUtSNH4w62EIz9FYhlwCHvmo2Njt0lJ         eoe+acLyZeDTr+W95CjRtnCyAzNm/OzC8+eRR5W/YkPCJU2R+x/la4EHI5wGOh0MUwvC         n72AY5YNby24mh5coSbNHP6I0yRk//P4lrQvyQNxLIotJQvgZgaY9BNr1Rl2eMd7U3O8         I9kg==;        dara=google.com"
+      },
+      {
+        "name": "ARC-Authentication-Results",
+        "value": "i=1; mx.google.com; arc=none"
+      },
+      {
+        "name": "DKIM-Signature",
+        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed;        d=gmail.com; s=20251104; t=1790458530; x=1791063330; dara=google.com;        h=content-type:to:subject:message-id:date:from:mime-version:from:to         :cc:subject:date:message-id:reply-to:content-type;        bh=Jp2EovnxN9Ez8IgfQI2UrI6SWLXf6+7EBSfEHoa4oqk=;        b=Mcb6FYlDpo5kZeJMd0FasymnV/Cj/VIOrACpdUKwysMX663SBqU6OYUHiQkHloORv6         DKuO1N6Qs7VTvOxJPoT8YI1+N1j/+G6N+lXfwaeChnV0sc8aim2rzKq+fRvyqFwRUu8v         5Fx+Ok4NcCOC/pFCmHsJ3KqtVqzRsdjg0ONG2i3gwS+i8DEE5Ql/krkDBxjefIpKcl+w         zzJbiqRjKM/2KvxXi2D9boNhflFGueD0qKWqdSAIjiReo+zMqWcbRxu/jAbmCXG8du9R         eOeTBVD/HlKnd5Au4scCsRT9wW56X+JHK56PtTyWvWo3Km2y7sJIRWK9VWpLTWUsh9o8         1i9g=="
+      },
+      {
+        "name": "X-Google-DKIM-Signature",
+        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed;        d=1e100.net; s=20260707; t=1790458530; x=1791063330;        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to         :content-type;        bh=Jp2EovnxN9Ez8IgfQI2UrI6SWLXf6+7EBSfEHoa4oqk=;        b=OTrB6cCmK47uDOFXk2ZKNzOrpUUWJ3hLhdTBdzb3fcBO394mQ25wx/7UBAtxvQMuss         Q/myx5MM229rk+hprV039OFOAYwcezqKWoxA4rFkU9N1Rlr1pUXAl9cZa+4GREfZg3g2         UEGPzPCg8kbPG0fybpcknnMWwSJlDyswkkWnJQ6HByIsZOZpIl2+YbsLcDhJ1kOHFQ/q         6OEgux3au8hzxUuYZ9+9Bzj+GdAb2MFU3F6bjQC2TUEIKd3r0WlkGHhDagIYsOG+IJIF         x8EiAUDxDcVwcv0mhiBrUkliPYaJSDOI1lg+U9B6wNbTrY2OjAF9N8QmCW8VT2dDB9aC         2C/A=="
+      },
+      {
+        "name": "X-Gm-Message-State",
+        "value": "AFq9FYLX5o2s/qGCLpp1UOoCNP/XeDgAd8EwDRXdPX470/So7h6jaM+R wKVHrRma7q+/S3yK2HJfkQ02Ck5IoUNq8ET1mef0+Cwgpu12W3b/Rm9/wNNbDjl/KS69WcKYn/t N9WxsjOhFqdL0ClNH/Yq1+u/90/H6kltbmQ=="
+      },
+      {
+        "name": "X-Gm-Gg",
+        "value": "AYBFou1AgqJT3D1wDzL4l/A5gFYbUIbPB/7wbLg27rJ+9HF5DFRFGP5G1kuAab5kDPO PfWikfUKSmNXDtjElLWO9qfHgJW0NL2e1jUsG0en2jE+xGB70/fy+Gh9itzgcckM35bUgV5m/Vi SkHiLPzz3WHHRmPTuil2Ajt1jjNCC+lCSa+R5kHYA6NZ+/2Kyli+zUihXBCR84ocx3jk9Wdl/TQ MlfaLbqE/AcNmo1STkjTpSkcSuj4F+5LDD5U57fOKXd7KteP5wBtgF13/GPe0n/daCJdIwXCDln sQriRrVQ2MUsGzTO5BIT6GfQBwQT6U+Jv9/8bMBRBJJ3wv+m0PXgZX+w11+kY4JsvO0Va0aMVyh 6r9Oagzmdt8tKBfbw49T0Z96A"
+      },
+      {
+        "name": "X-Received",
+        "value": "by 2002:a05:6512:23aa:b0:5b8:f417:dbf5 with SMTP id 2adb3069b0e04-5b8f417ddc5mr331067e87.13.1790458529600; Sat, 26 Sep 2026 14:35:29 -0700 (PDT)"
+      },
+      {
+        "name": "MIME-Version",
+        "value": "1.0"
+      },
+      {
+        "name": "From",
+        "value": "\"Pavel Dvořák\" <zakaznik@example.com>"
+      },
+      {
+        "name": "Date",
+        "value": "Sat, 26 Sep 2026 23:35:18 +0200"
+      },
+      {
+        "name": "X-Gm-Features",
+        "value": "AclHuK8i44HeV0ds9oSTNL6Sts8oLeCZmR7did8-wuau0VAaPmc32Vod8CjlUxI"
+      },
+      {
+        "name": "Message-ID",
+        "value": "<CA+9zZuSDe5LpGgGceCjHvccRsgfkDPrviEff3=S7mf5Mj1wC-A@mail.gmail.com>"
+      },
+      {
+        "name": "Subject",
+        "value": "Dotaz na zboží"
+      },
+      {
+        "name": "To",
+        "value": "techmailbot6@gmail.com"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/alternative; boundary=\"000000000000a458c9065c699cfa\""
+      }
+    ],
+    "body": {
+      "size": 0
+    },
+    "parts": [
+      {
+        "partId": "0",
+        "mimeType": "text/plain",
+        "filename": "",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "text/plain; charset=\"UTF-8\""
+          },
+          {
+            "name": "Content-Transfer-Encoding",
+            "value": "quoted-printable"
+          }
+        ],
+        "body": {
+          "size": 76,
+          "data": "RG9icsO9IGRlbiwNCg0KbcOhdGUgbsSbamFrb3UgbGVkbmnEjWt1IG5hIHNrbGFkdT8NCg0KUyBwb3pkcmF2ZW0NClBldGVya2ENCg=="
+        }
+      },
+      {
+        "partId": "1",
+        "mimeType": "text/html",
+        "filename": "",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "text/html; charset=\"UTF-8\""
+          },
+          {
+            "name": "Content-Transfer-Encoding",
+            "value": "quoted-printable"
+          }
+        ],
+        "body": {
+          "size": 161,
+          "data": "PGRpdiBkaXI9Imx0ciI-PGRpdj5Eb2Jyw70gZGVuLDwvZGl2PjxkaXY-PGJyPjwvZGl2PjxkaXY-bcOhdGUgbsSbamFrb3UgbGVkbmnEjWt1IG5hIHNrbGFkdT88L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2PlMgcG96ZHJhdmVtPC9kaXY-PGRpdj5QZXRlcmthPC9kaXY-PC9kaXY-DQo="
+        }
+      }
+    ]
+  },
+  "sizeEstimate": 7393,
+  "historyId": "3563",
+  "internalDate": "1790458518000"
+}
