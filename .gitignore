@@ -1,0 +1,8 @@
+credentials.json
+token.json
+.venv/
+__pycache__/
+
+# local only
+docs/
+archive/
