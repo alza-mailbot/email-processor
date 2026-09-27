@@ -3,6 +3,7 @@ token.json
 .env
 .env.*
 !.env.sample
+.state.json
 .venv/
 __pycache__/
 .pytest_cache/
