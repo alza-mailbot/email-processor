@@ -2,6 +2,9 @@
 
 import base64
 import json
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from email import message_from_bytes
 from email.header import decode_header, make_header
 from pathlib import Path
@@ -250,6 +253,28 @@ class TestMarkProcessed:
 
         with pytest.raises(HttpError):
             client.mark_processed("msg1")
+
+
+class TestThreadSafety:
+    """Tests for serialization of the non-thread-safe service resource."""
+
+    def test_concurrent_calls_do_not_overlap(self) -> None:
+        """Verify two threads never execute service calls at the same time."""
+        client, service = _client()
+        active = threading.Semaphore(1)
+
+        def slow_execute() -> dict[str, Any]:
+            assert active.acquire(blocking=False), "service used by two threads at once"
+            time.sleep(0.02)
+            active.release()
+            return {"id": "m1", "threadId": "t1", "payload": {}}
+
+        service.users().messages().get.return_value.execute.side_effect = slow_execute
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results = list(pool.map(lambda _: client.get_message("m1"), range(4)))
+
+        assert all(r is not None for r in results)
 
 
 class TestGetProfileAddress:

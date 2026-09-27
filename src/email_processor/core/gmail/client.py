@@ -1,6 +1,7 @@
 """Gmail API client wrapping the dynamic googleapiclient service resource."""
 
 import base64
+import threading
 from email.mime.text import MIMEText
 from email.utils import formataddr
 from typing import Any
@@ -20,7 +21,8 @@ class GmailClient:
     """Synchronous Gmail operations for the bot mailbox.
 
     All googleapiclient calls are blocking; callers in async code run them
-    via asyncio.to_thread.
+    via asyncio.to_thread. The underlying httplib2 connection is not thread
+    safe, so every call is serialized by a lock.
     """
 
     def __init__(self, service: Any) -> None:
@@ -30,6 +32,7 @@ class GmailClient:
             service: Resource built by build_gmail_service.
         """
         self._service = service
+        self._lock = threading.Lock()
 
     def get_message(self, message_id: str) -> dict[str, Any] | None:
         """Fetch a full message resource.
@@ -45,7 +48,8 @@ class GmailClient:
             HttpError: For API failures other than 404.
         """
         try:
-            return self._service.users().messages().get(userId="me", id=message_id).execute()
+            with self._lock:
+                return self._service.users().messages().get(userId="me", id=message_id).execute()
         except HttpError as exc:
             if exc.resp.status == 404:
                 logger.info("[GMAIL] Message %s no longer exists, skipping", message_id)
@@ -70,17 +74,18 @@ class GmailClient:
         page_token: str | None = None
         while True:
             try:
-                response = (
-                    self._service.users()
-                    .history()
-                    .list(
-                        userId="me",
-                        startHistoryId=start_history_id,
-                        historyTypes=["messageAdded"],
-                        pageToken=page_token,
+                with self._lock:
+                    response = (
+                        self._service.users()
+                        .history()
+                        .list(
+                            userId="me",
+                            startHistoryId=start_history_id,
+                            historyTypes=["messageAdded"],
+                            pageToken=page_token,
+                        )
+                        .execute()
                     )
-                    .execute()
-                )
             except HttpError as exc:
                 if exc.resp.status == 404:
                     raise HistoryExpiredError(
@@ -107,13 +112,14 @@ class GmailClient:
         Returns:
             bytes: Raw attachment content.
         """
-        attachment = (
-            self._service.users()
-            .messages()
-            .attachments()
-            .get(userId="me", messageId=message_id, id=attachment_id)
-            .execute()
-        )
+        with self._lock:
+            attachment = (
+                self._service.users()
+                .messages()
+                .attachments()
+                .get(userId="me", messageId=message_id, id=attachment_id)
+                .execute()
+            )
         data = attachment["data"]
         return base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))
 
@@ -134,9 +140,10 @@ class GmailClient:
             mime["In-Reply-To"] = email.rfc_message_id
             mime["References"] = email.rfc_message_id
         raw = base64.urlsafe_b64encode(mime.as_bytes()).decode()
-        self._service.users().messages().send(
-            userId="me", body={"raw": raw, "threadId": email.thread_id}
-        ).execute()
+        with self._lock:
+            self._service.users().messages().send(
+                userId="me", body={"raw": raw, "threadId": email.thread_id}
+            ).execute()
         logger.info("[GMAIL] Reply sent to %s", email.sender_address)
 
     def setup_watch(self, topic_name: str) -> str:
@@ -148,11 +155,12 @@ class GmailClient:
         Returns:
             str: The mailbox history id at registration time.
         """
-        response = (
-            self._service.users()
-            .watch(userId="me", body={"topicName": topic_name, "labelIds": ["INBOX"]})
-            .execute()
-        )
+        with self._lock:
+            response = (
+                self._service.users()
+                .watch(userId="me", body={"topicName": topic_name, "labelIds": ["INBOX"]})
+                .execute()
+            )
         history_id = response["historyId"]
         logger.info("[GMAIL] Watch established, history id %s", history_id)
         return history_id
@@ -163,14 +171,16 @@ class GmailClient:
         Args:
             message_id: Gmail message id.
         """
-        self._service.users().messages().modify(
-            userId="me", id=message_id, body={"removeLabelIds": ["UNREAD"]}
-        ).execute()
+        with self._lock:
+            self._service.users().messages().modify(
+                userId="me", id=message_id, body={"removeLabelIds": ["UNREAD"]}
+            ).execute()
         logger.info("[GMAIL] Message %s marked as read", message_id)
 
     def get_profile_address(self) -> str:
         """Return the email address of the authenticated mailbox."""
-        profile = self._service.users().getProfile(userId="me").execute()
+        with self._lock:
+            profile = self._service.users().getProfile(userId="me").execute()
         return profile["emailAddress"]
 
     def get_thread_messages(self, thread_id: str, *, bot_address: str) -> list[ThreadMessage]:
@@ -184,7 +194,8 @@ class GmailClient:
         Returns:
             list[ThreadMessage]: Messages in chronological order.
         """
-        thread = self._service.users().threads().get(userId="me", id=thread_id).execute()
+        with self._lock:
+            thread = self._service.users().threads().get(userId="me", id=thread_id).execute()
         messages = []
         for msg in thread.get("messages", []):
             payload = msg.get("payload", {})
