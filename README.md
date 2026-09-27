@@ -42,6 +42,29 @@ The server listens on port **8081** so it can run next to the chatbot service (8
 
 *Done when:* `curl localhost:8081/healthz` returns `{"status":"ok"}`.
 
+## Local E2E
+
+Full pipeline against the real mailbox, with both services on your machine:
+
+1. Start the chatbot (port 8080, sibling repo) and this service:
+   ```bash
+   just run   # in each repository
+   ```
+   With `RENEW_WATCH_ON_STARTUP=true` the startup renews the Gmail watch and
+   baselines (or catches up) the history pointer.
+2. Expose the processor and point the Pub/Sub push subscription at it:
+   ```bash
+   cloudflared tunnel --url http://localhost:8081
+   gcloud pubsub subscriptions update gmail-push-sub \
+     --push-endpoint="https://<tunnel>.trycloudflare.com/gmail-webhook"
+   ```
+3. Send an email with text and a PDF attachment to the bot mailbox from a
+   personal address. Within ~2 minutes a contextual reply arrives in the same
+   thread and the message is marked read.
+4. Reply in the same thread; the next answer takes the history into account.
+5. Restart the processor and let Pub/Sub redeliver anything pending: no
+   duplicate replies may appear (deduplication via the state file).
+
 ## Development
 
 | Command | Description |
