@@ -12,6 +12,14 @@ from email_processor.models.email import IncomingEmail, ThreadMessage
 from email_processor.utils.logger import logger
 
 
+class UnsupportedContentError(Exception):
+    """Permanent rejection by the chatbot; retrying cannot help."""
+
+
+class ChatbotUnavailableError(Exception):
+    """Transient chatbot failure; the notification should be retried."""
+
+
 class Attachment(BaseModel):
     """Downloaded attachment ready to be forwarded to the chatbot.
 
@@ -56,6 +64,10 @@ class ChatbotClient:
 
         Returns:
             str: The generated reply text.
+
+        Raises:
+            UnsupportedContentError: The chatbot rejected the content (422/413).
+            ChatbotUnavailableError: Transport failure, 5xx, or a malformed response.
         """
         data = {"subject": email.subject, "body": email.body}
         if thread:
@@ -71,5 +83,26 @@ class ChatbotClient:
             len(thread),
             len(attachments),
         )
-        response = await self._client.post("/v1/chat", data=data, files=files)
-        return response.json()["reply"]
+        try:
+            response = await self._client.post("/v1/chat", data=data, files=files)
+        except httpx.HTTPError as exc:
+            raise ChatbotUnavailableError(f"Chatbot request failed: {exc}") from exc
+        if response.status_code in (413, 422):
+            raise UnsupportedContentError(_detail(response))
+        if response.status_code != 200:
+            raise ChatbotUnavailableError(f"Chatbot returned {response.status_code}")
+        try:
+            reply = response.json()["reply"]
+        except (ValueError, KeyError, TypeError) as exc:
+            raise ChatbotUnavailableError("Malformed chatbot response") from exc
+        if not isinstance(reply, str) or not reply.strip():
+            raise ChatbotUnavailableError("Empty or invalid reply from chatbot")
+        return reply
+
+
+def _detail(response: httpx.Response) -> str:
+    """Extract the error detail from a contract error response."""
+    try:
+        return str(response.json().get("detail", response.text))
+    except ValueError:
+        return response.text
