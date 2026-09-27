@@ -8,6 +8,7 @@ dependencies = [
     "google-api-python-client>=2.200.0",
     "google-auth>=2.58.1",
     "google-auth-oauthlib>=1.4.1",
+    "google-cloud-firestore>=2.32.0",
     "httpx>=0.28.1",
     "pydantic-settings>=2.15.0",
     "uvicorn>=0.54.0",
