@@ -3,10 +3,12 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+import httpx
 from fastapi import FastAPI
 
 from email_processor.api.routes_health import router as health_router
 from email_processor.config import get_settings
+from email_processor.core.chatbot import ChatbotClient
 from email_processor.core.state import create_state_store
 from email_processor.utils.logger import logger
 
@@ -20,8 +22,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     settings = get_settings()
     app.state.state_store = create_state_store(settings)
+    app.state.chatbot = ChatbotClient(
+        httpx.AsyncClient(base_url=settings.chatbot_url, timeout=settings.chatbot_timeout_seconds)
+    )
     logger.info("[APP] Starting up, state backend: %s", settings.state_backend)
     yield
+    await app.state.chatbot.aclose()
     logger.info("[APP] Shutting down")
 
 

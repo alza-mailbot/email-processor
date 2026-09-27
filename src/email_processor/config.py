@@ -15,6 +15,8 @@ class Settings(BaseSettings):
         gmail_token_path: Path to the Gmail OAuth token file.
         state_backend: Where processing state lives; file locally, firestore in cloud.
         state_file_path: State file location for the file backend.
+        chatbot_url: Base URL of the chatbot service.
+        chatbot_timeout_seconds: Budget for one chatbot call.
     """
 
     model_config = SettingsConfigDict(env_file=".env")
@@ -24,6 +26,8 @@ class Settings(BaseSettings):
     gmail_token_path: str
     state_backend: Literal["file", "firestore"] = "file"
     state_file_path: str = ".state.json"
+    chatbot_url: str
+    chatbot_timeout_seconds: float = 120
 
 
 @lru_cache
