@@ -7,6 +7,7 @@ from typing import Protocol
 from google.api_core.exceptions import AlreadyExists
 from google.cloud import firestore
 
+from email_processor.config import Settings
 from email_processor.utils.logger import logger
 
 
@@ -131,3 +132,19 @@ class FirestoreStateStore:
         except AlreadyExists:
             return False
         return True
+
+
+def create_state_store(settings: Settings) -> StateStore:
+    """Build the state store selected by the settings.
+
+    Args:
+        settings: Application settings naming the backend.
+
+    Returns:
+        StateStore: FileStateStore or FirestoreStateStore.
+    """
+    if settings.state_backend == "firestore":
+        # No-arg Client resolves credentials and project via ADC: the gcloud
+        # user login locally, the service account metadata server on Cloud Run
+        return FirestoreStateStore(firestore.Client())
+    return FileStateStore(settings.state_file_path)
