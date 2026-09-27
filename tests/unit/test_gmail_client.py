@@ -2,6 +2,8 @@
 
 import base64
 import json
+from email import message_from_bytes
+from email.header import decode_header, make_header
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
@@ -10,6 +12,7 @@ import pytest
 from googleapiclient.errors import HttpError
 
 from email_processor.core.gmail.client import GmailClient, HistoryExpiredError
+from email_processor.models.email import IncomingEmail
 
 _FIXTURES = Path(__file__).parent.parent / "fixtures" / "gmail"
 
@@ -135,6 +138,95 @@ class TestDownloadAttachment:
         assert result == b"%PDF-1.4 payload"
         service.users().messages().attachments().get.assert_called_with(
             userId="me", messageId="msg1", id="att1"
+        )
+
+
+def _incoming_email(**overrides: Any) -> IncomingEmail:
+    """Build an IncomingEmail with sensible defaults for reply tests."""
+    defaults: dict[str, Any] = {
+        "message_id": "msg1",
+        "thread_id": "thr1",
+        "sender_name": "Pavel Dvořák",
+        "sender_address": "zakaznik@example.com",
+        "subject": "Dotaz na zboží",
+        "rfc_message_id": "<original@mail.example.com>",
+        "body": "Dobrý den...",
+        "attachments": [],
+    }
+    return IncomingEmail(**{**defaults, **overrides})
+
+
+def _sent_mime(service: MagicMock) -> tuple[Any, dict[str, Any]]:
+    """Decode the MIME message and body passed to messages().send."""
+    body = service.users().messages().send.call_args.kwargs["body"]
+    raw = body["raw"]
+    mime = message_from_bytes(base64.urlsafe_b64decode(raw + "=" * (-len(raw) % 4)))
+    return mime, body
+
+
+class TestSendReply:
+    """Tests for GmailClient.send_reply."""
+
+    def test_builds_threaded_reply_with_encoded_name(self) -> None:
+        """Verify threading fields and RFC 2047 encoding of a non-ASCII name."""
+        client, service = _client()
+        email = _incoming_email()
+
+        client.send_reply(email, "Dobrý den, ano, máme.")
+
+        mime, body = _sent_mime(service)
+        assert body["threadId"] == "thr1"
+        assert "zakaznik@example.com" in mime["To"]
+        assert "=?utf-8?" in mime["To"]
+        assert str(make_header(decode_header(mime["Subject"]))) == "Re: Dotaz na zboží"
+        assert mime["In-Reply-To"] == "<original@mail.example.com>"
+        assert mime["References"] == "<original@mail.example.com>"
+        assert "Dobrý den, ano" in mime.get_payload(decode=True).decode()
+        assert service.users().messages().send.call_args.kwargs["userId"] == "me"
+
+    def test_ascii_sender_name_stays_plain(self) -> None:
+        """Verify an ASCII display name is not needlessly encoded."""
+        client, service = _client()
+
+        client.send_reply(_incoming_email(sender_name="John Doe"), "Hello")
+
+        mime, _ = _sent_mime(service)
+        assert mime["To"] == "John Doe <zakaznik@example.com>"
+
+    def test_existing_re_prefix_is_not_duplicated(self) -> None:
+        """Verify a subject already marked as a reply keeps a single prefix."""
+        client, service = _client()
+
+        client.send_reply(_incoming_email(subject="RE: Dotaz"), "Ano.")
+
+        mime, _ = _sent_mime(service)
+        assert mime["Subject"] == "RE: Dotaz"
+
+    def test_missing_rfc_message_id_omits_threading_headers(self) -> None:
+        """Verify absent Message-ID leaves threading to threadId only."""
+        client, service = _client()
+
+        client.send_reply(_incoming_email(rfc_message_id=None), "Ano.")
+
+        mime, body = _sent_mime(service)
+        assert mime["In-Reply-To"] is None
+        assert mime["References"] is None
+        assert body["threadId"] == "thr1"
+
+
+class TestSetupWatch:
+    """Tests for GmailClient.setup_watch."""
+
+    def test_registers_inbox_watch_and_returns_history_id(self) -> None:
+        """Verify the watch request targets the topic and INBOX only."""
+        client, service = _client()
+        service.users().watch.return_value.execute.return_value = {"historyId": "1683"}
+
+        result = client.setup_watch("projects/p/topics/t")
+
+        assert result == "1683"
+        service.users().watch.assert_called_with(
+            userId="me", body={"topicName": "projects/p/topics/t", "labelIds": ["INBOX"]}
         )
 
 
