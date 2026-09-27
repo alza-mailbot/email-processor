@@ -117,7 +117,13 @@ class EmailProcessor:
         thread = await asyncio.to_thread(
             self._gmail.get_thread_messages, email.thread_id, bot_address=self._bot_address
         )
-        thread = [message for message in thread if message.message_id != email.message_id]
+        # the thread may already contain messages newer than the answered one
+        # (rapid follow-ups); the reply context must not see that future
+        current = next(
+            (i for i, message in enumerate(thread) if message.message_id == email.message_id),
+            len(thread),
+        )
+        thread = thread[:current]
         attachments = [
             Attachment(
                 filename=ref.filename,

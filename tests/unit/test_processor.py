@@ -98,12 +98,25 @@ class TestHappyPath:
         assert attachments[0].filename == "purchase.pdf"
         assert attachments[0].data == b"%PDF-1.4"
 
-    async def test_thread_excludes_the_message_being_answered(self) -> None:
-        """Verify the current message is not duplicated into the thread context."""
+    async def test_thread_is_truncated_at_the_message_being_answered(self) -> None:
+        """Verify the context holds only messages older than the answered one."""
         gmail, chatbot, state = _deps()
         gmail.get_thread_messages.return_value = [
             ThreadMessage(message_id="older", role="user", text="Older question"),
             ThreadMessage(message_id="1a0df8b813c620b8", role="user", text="Current"),
+            ThreadMessage(message_id="newer", role="user", text="Sent moments later"),
+        ]
+
+        await _run(gmail, chatbot, state)
+
+        thread = chatbot.get_reply.call_args.args[1]
+        assert [m.message_id for m in thread] == ["older"]
+
+    async def test_thread_without_the_answered_message_is_kept_whole(self) -> None:
+        """Verify the fallback when the thread does not list the answered message."""
+        gmail, chatbot, state = _deps()
+        gmail.get_thread_messages.return_value = [
+            ThreadMessage(message_id="older", role="user", text="Older question"),
         ]
 
         await _run(gmail, chatbot, state)
