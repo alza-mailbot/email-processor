@@ -1,0 +1,8 @@
+{
+  "message": {
+    "data": "eyJlbWFpbEFkZHJlc3MiOiAidGVjaG1haWxib3Q2QGdtYWlsLmNvbSIsICJoaXN0b3J5SWQiOiAxNjgzMjQwfQ==",
+    "messageId": "11929415534269",
+    "publishTime": "2026-09-27T12:00:00.000Z"
+  },
+  "subscription": "projects/alza-mailbot-509813/subscriptions/gmail-push"
+}
