@@ -64,3 +64,17 @@ class TestClaimMessage:
         )
 
         assert store.claim_message("abc") is False
+
+
+class TestReleaseClaim:
+    """Tests for freeing a claim after a failed processing attempt."""
+
+    def test_release_deletes_the_claim_document(self) -> None:
+        """Verify release removes processed_messages/{id}."""
+        store, client = _store()
+
+        store.release_claim("abc")
+
+        client.collection.assert_called_with("processed_messages")
+        client.collection.return_value.document.assert_called_with("abc")
+        client.collection.return_value.document.return_value.delete.assert_called_once()

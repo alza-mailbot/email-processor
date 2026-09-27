@@ -58,3 +58,25 @@ class TestCorruptedFile:
 
         assert store.get_last_history_id() is None
         assert store.claim_message("abc") is True
+
+
+class TestReleaseClaim:
+    """Tests for freeing a claim after a failed processing attempt."""
+
+    def test_released_message_can_be_claimed_again(self, tmp_path: Path) -> None:
+        """Verify release makes the id claimable, surviving a new instance."""
+        path = tmp_path / "state.json"
+        store = FileStateStore(path)
+        store.claim_message("abc")
+
+        store.release_claim("abc")
+
+        assert FileStateStore(path).claim_message("abc") is True
+
+    def test_releasing_unclaimed_id_is_a_noop(self, tmp_path: Path) -> None:
+        """Verify releasing an unknown id does not fail."""
+        store = FileStateStore(tmp_path / "state.json")
+
+        store.release_claim("never-claimed")
+
+        assert store.claim_message("never-claimed") is True

@@ -31,6 +31,10 @@ class StateStore(Protocol):
         """
         ...
 
+    def release_claim(self, message_id: str) -> None:
+        """Free a claim so a retry can process the message again."""
+        ...
+
 
 class FileStateStore:
     """JSON-file store for local development; not safe across instances."""
@@ -88,6 +92,18 @@ class FileStateStore:
         self._write(state)
         return True
 
+    def release_claim(self, message_id: str) -> None:
+        """Free a claim so a retry can process the message again.
+
+        Args:
+            message_id: Gmail message id.
+        """
+        state = self._read()
+        claimed = state.get("claimed_messages")
+        if isinstance(claimed, list) and message_id in claimed:
+            claimed.remove(message_id)
+            self._write(state)
+
 
 class FirestoreStateStore:
     """Firestore-backed store, shared by all service instances."""
@@ -132,6 +148,14 @@ class FirestoreStateStore:
         except AlreadyExists:
             return False
         return True
+
+    def release_claim(self, message_id: str) -> None:
+        """Free a claim so a retry can process the message again.
+
+        Args:
+            message_id: Gmail message id.
+        """
+        self._client.collection("processed_messages").document(message_id).delete()
 
 
 def create_state_store(settings: Settings) -> StateStore:
