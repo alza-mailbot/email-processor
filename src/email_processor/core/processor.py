@@ -47,7 +47,7 @@ class EmailProcessor:
         self._gmail = gmail
         self._chatbot = chatbot
         self._state = state
-        self._bot_address = bot_address
+        self.bot_address = bot_address
 
     async def run(self, notification: GmailNotification) -> None:
         """Process a Gmail notification.
@@ -110,12 +110,12 @@ class EmailProcessor:
         if raw is None:
             return
         email = parse_message(raw)
-        if email.sender_address == self._bot_address:
+        if email.sender_address == self.bot_address:
             logger.info("[PROCESSOR] Message %s is our own reply, skipping", message_id)
             return
 
         thread = await asyncio.to_thread(
-            self._gmail.get_thread_messages, email.thread_id, bot_address=self._bot_address
+            self._gmail.get_thread_messages, email.thread_id, bot_address=self.bot_address
         )
         # the thread may already contain messages newer than the answered one
         # (rapid follow-ups); the reply context must not see that future

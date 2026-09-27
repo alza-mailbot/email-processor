@@ -252,6 +252,21 @@ class TestMarkProcessed:
             client.mark_processed("msg1")
 
 
+class TestGetProfileAddress:
+    """Tests for GmailClient.get_profile_address."""
+
+    def test_returns_mailbox_address(self) -> None:
+        """Verify the authenticated mailbox address is read from the profile."""
+        client, service = _client()
+        service.users().getProfile.return_value.execute.return_value = {
+            "emailAddress": "techmailbot6@gmail.com",
+            "historyId": "1683",
+        }
+
+        assert client.get_profile_address() == "techmailbot6@gmail.com"
+        service.users().getProfile.assert_called_with(userId="me")
+
+
 class TestGetThreadMessages:
     """Tests for GmailClient.get_thread_messages."""
 

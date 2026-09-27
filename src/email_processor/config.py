@@ -17,6 +17,8 @@ class Settings(BaseSettings):
         state_file_path: State file location for the file backend.
         chatbot_url: Base URL of the chatbot service.
         chatbot_timeout_seconds: Budget for one chatbot call.
+        pubsub_topic: Fully qualified Pub/Sub topic Gmail publishes to.
+        renew_watch_on_startup: Also renew the Gmail watch when the app boots.
     """
 
     model_config = SettingsConfigDict(env_file=".env")
@@ -28,6 +30,8 @@ class Settings(BaseSettings):
     state_file_path: str = ".state.json"
     chatbot_url: str
     chatbot_timeout_seconds: float = 120
+    pubsub_topic: str
+    renew_watch_on_startup: bool = False
 
 
 @lru_cache

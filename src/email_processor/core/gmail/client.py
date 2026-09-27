@@ -168,6 +168,11 @@ class GmailClient:
         ).execute()
         logger.info("[GMAIL] Message %s marked as read", message_id)
 
+    def get_profile_address(self) -> str:
+        """Return the email address of the authenticated mailbox."""
+        profile = self._service.users().getProfile(userId="me").execute()
+        return profile["emailAddress"]
+
     def get_thread_messages(self, thread_id: str, *, bot_address: str) -> list[ThreadMessage]:
         """Fetch a thread as role-mapped plain-text messages.
 
