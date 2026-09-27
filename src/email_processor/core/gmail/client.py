@@ -157,6 +157,17 @@ class GmailClient:
         logger.info("[GMAIL] Watch established, history id %s", history_id)
         return history_id
 
+    def mark_processed(self, message_id: str) -> None:
+        """Mark a message as read once it has been answered.
+
+        Args:
+            message_id: Gmail message id.
+        """
+        self._service.users().messages().modify(
+            userId="me", id=message_id, body={"removeLabelIds": ["UNREAD"]}
+        ).execute()
+        logger.info("[GMAIL] Message %s marked as read", message_id)
+
     def get_thread_messages(self, thread_id: str, *, bot_address: str) -> list[ThreadMessage]:
         """Fetch a thread as role-mapped plain-text messages.
 

@@ -230,6 +230,28 @@ class TestSetupWatch:
         )
 
 
+class TestMarkProcessed:
+    """Tests for GmailClient.mark_processed."""
+
+    def test_removes_unread_label(self) -> None:
+        """Verify the message is marked read via label removal."""
+        client, service = _client()
+
+        client.mark_processed("msg1")
+
+        service.users().messages().modify.assert_called_with(
+            userId="me", id="msg1", body={"removeLabelIds": ["UNREAD"]}
+        )
+
+    def test_api_error_propagates(self) -> None:
+        """Verify modify failures are not swallowed."""
+        client, service = _client()
+        service.users().messages().modify.return_value.execute.side_effect = _http_error(500)
+
+        with pytest.raises(HttpError):
+            client.mark_processed("msg1")
+
+
 class TestGetThreadMessages:
     """Tests for GmailClient.get_thread_messages."""
 
