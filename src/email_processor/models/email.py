@@ -1,5 +1,7 @@
 """Internal representation of an incoming email."""
 
+from typing import Literal
+
 from pydantic import BaseModel
 
 
@@ -39,3 +41,17 @@ class IncomingEmail(BaseModel):
     rfc_message_id: str | None
     body: str
     attachments: list[AttachmentRef]
+
+
+class ThreadMessage(BaseModel):
+    """One message of a thread, reduced to what the chatbot contract needs.
+
+    Attributes:
+        message_id: Gmail message id, used to exclude the message being answered.
+        role: assistant when sent by the bot mailbox, user otherwise.
+        text: Plain-text body of the message.
+    """
+
+    message_id: str
+    role: Literal["user", "assistant"]
+    text: str
