@@ -21,7 +21,9 @@ class Settings(BaseSettings):
         renew_watch_on_startup: Also renew the Gmail watch when the app boots.
     """
 
-    model_config = SettingsConfigDict(env_file=".env")
+    # the .env file also carries entries consumed directly by Google
+    # libraries (e.g. GOOGLE_CLOUD_PROJECT), not just our own fields
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     log_level: str = "INFO"
     port: int = 8080

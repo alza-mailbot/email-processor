@@ -50,3 +50,13 @@ class TestGetSettings:
         get_settings.cache_clear()
 
         assert get_settings() is get_settings()
+
+
+class TestExtraEnvEntries:
+    """Tests for tolerance of env entries owned by other consumers."""
+
+    def test_unknown_entries_are_ignored(self) -> None:
+        """Verify entries like GOOGLE_CLOUD_PROJECT do not fail validation."""
+        settings = Settings(google_cloud_project="some-project")  # ty: ignore[unknown-argument]
+
+        assert not hasattr(settings, "google_cloud_project")

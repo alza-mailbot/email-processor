@@ -44,6 +44,22 @@ check: lint type-check
 # Format + lint with auto-fix
 fix: format lint-fix
 
+# Build the container image
+docker-build:
+    docker build -t email-processor .
+
+# Run the container locally (ADC for Firestore; token mounted like the Cloud Run secret volume)
+docker-run:
+    docker run --rm -p 8081:8080 --env-file .env \
+      --add-host=host.docker.internal:host-gateway \
+      -e CHATBOT_URL=http://host.docker.internal:8080 \
+      -e STATE_BACKEND=firestore \
+      -v ~/.config/gcloud/application_default_credentials.json:/adc.json:ro \
+      -e GOOGLE_APPLICATION_CREDENTIALS=/adc.json \
+      -v $(pwd)/token.json:/secrets/gmail-token.json:ro \
+      -e GMAIL_TOKEN_PATH=/secrets/gmail-token.json \
+      email-processor
+
 # Install pre-commit hooks
 install-hooks:
     uv run pre-commit install

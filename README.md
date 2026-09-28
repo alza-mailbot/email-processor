@@ -75,6 +75,8 @@ Full pipeline against the real mailbox, with both services on your machine:
 | `just check` | Lint + type-check |
 | `just fix` | Format + auto-fix lint issues |
 | `just pre-commit` | Run all pre-commit checks manually |
+| `just docker-build` | Build the container image |
+| `just docker-run` | Run the container (Firestore state, cloud-like mounts) |
 
 Every commit runs ruff, ty and the full pytest suite via pre-commit hooks.
 
