@@ -27,7 +27,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     app.state.state_store = create_state_store(settings)
     app.state.chatbot = ChatbotClient(
-        httpx.AsyncClient(base_url=settings.chatbot_url, timeout=settings.chatbot_timeout_seconds)
+        httpx.AsyncClient(base_url=settings.chatbot_url, timeout=settings.chatbot_timeout_seconds),
+        auth_audience=settings.chatbot_url if settings.chatbot_auth else None,
     )
     logger.info("[APP] Starting up, state backend: %s", settings.state_backend)
     if settings.renew_watch_on_startup:

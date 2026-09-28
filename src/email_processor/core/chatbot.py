@@ -3,9 +3,12 @@
 The only module that knows the chatbot API shape.
 """
 
+import asyncio
 import json
 
 import httpx
+from google.auth.transport.requests import Request
+from google.oauth2 import id_token
 from pydantic import BaseModel
 
 from email_processor.models.email import IncomingEmail, ThreadMessage
@@ -37,13 +40,17 @@ class Attachment(BaseModel):
 class ChatbotClient:
     """Async client for POST /v1/chat."""
 
-    def __init__(self, client: httpx.AsyncClient) -> None:
+    def __init__(self, client: httpx.AsyncClient, *, auth_audience: str | None = None) -> None:
         """Wrap a configured HTTP client.
 
         Args:
             client: AsyncClient with the chatbot base_url and timeout set.
+            auth_audience: When set, every request carries a Google-signed
+                identity token for this audience (the chatbot's Cloud Run
+                URL); None keeps requests unauthenticated for local use.
         """
         self._client = client
+        self._auth_audience = auth_audience
 
     async def aclose(self) -> None:
         """Close the underlying HTTP client."""
@@ -83,8 +90,12 @@ class ChatbotClient:
             len(thread),
             len(attachments),
         )
+        headers = {}
+        if self._auth_audience:
+            token = await asyncio.to_thread(id_token.fetch_id_token, Request(), self._auth_audience)
+            headers["Authorization"] = f"Bearer {token}"
         try:
-            response = await self._client.post("/v1/chat", data=data, files=files)
+            response = await self._client.post("/v1/chat", data=data, files=files, headers=headers)
         except httpx.HTTPError as exc:
             raise ChatbotUnavailableError(f"Chatbot request failed: {exc}") from exc
         if response.status_code in (413, 422):

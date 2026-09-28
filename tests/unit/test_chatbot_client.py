@@ -2,6 +2,7 @@
 
 import json
 from typing import Any
+from unittest.mock import patch
 
 import httpx
 import pytest
@@ -162,3 +163,39 @@ class TestGetReplyErrors:
 
         with pytest.raises(ChatbotUnavailableError):
             await client.get_reply(_incoming_email(), [], [])
+
+
+class TestOidcAuth:
+    """Tests for the identity token attached when an audience is configured."""
+
+    async def test_audience_adds_bearer_header(self) -> None:
+        """Verify the fetched id token travels as the Authorization header."""
+        requests: list[httpx.Request] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            requests.append(request)
+            return httpx.Response(200, json={"reply": "Ok"})
+
+        http = httpx.AsyncClient(
+            transport=httpx.MockTransport(handler), base_url="http://chatbot.test"
+        )
+        client = ChatbotClient(http, auth_audience="https://chatbot.example.run.app")
+
+        with patch("email_processor.core.chatbot.id_token.fetch_id_token") as fetch:
+            fetch.return_value = "signed-token-123"
+            reply = await client.get_reply(_incoming_email(), [], [])
+
+        assert reply == "Ok"
+        assert requests[0].headers["Authorization"] == "Bearer signed-token-123"
+        assert fetch.call_args.args[1] == "https://chatbot.example.run.app"
+
+    async def test_without_audience_no_auth_header(self) -> None:
+        """Verify local usage keeps requests unauthenticated."""
+        requests: list[httpx.Request] = []
+        client = _client(httpx.Response(200, json={"reply": "Ok"}), requests)
+
+        with patch("email_processor.core.chatbot.id_token.fetch_id_token") as fetch:
+            await client.get_reply(_incoming_email(), [], [])
+
+        fetch.assert_not_called()
+        assert "authorization" not in requests[0].headers
